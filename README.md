@@ -8,6 +8,16 @@ This project is focused on monitoring and data logging for:
  
 This repo is used in combination with [plasmaData_analysis](https://github.com/dylanhadfieldd/plasmaData_analysis.git) for downstream analysis and reproducibility.
 
+
+![alt text](<Screenshot 2026-03-09 100834.png>)
+
+
+![alt text](<Screenshot 2026-03-09 100854.png>)
+
+
+![alt text](<Screenshot 2026-03-09 100920.png>)
+
+
 ## Project Layout
 
 ```text
