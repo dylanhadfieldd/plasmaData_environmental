@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESP32 TFT UI Tester</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="tft-shell" aria-label="TFT preview frame">
+        <div class="tft-screen" id="screen">
+          <header class="panel header-panel">
+            <div class="header-brand">
+              <img
+                src="assets/capture-healing-logo.png"
+                alt="CAPture Healing logo"
+                class="header-logo"
+              />
+            </div>
+            <div class="header-copy">
+              <h1>ESP32 ENVIRONMENT DASHBOARD</h1>
+              <p id="pageTitle">Main Dashboard</p>
+            </div>
+            <button id="nextPageBtn" class="next-page-btn" type="button">NEXT PAGE</button>
+            <div class="uptime" id="uptime">UP 00:00:00</div>
+          </header>
+
+          <section class="card-grid tft-page" id="page-dashboard">
+            <article class="panel metric-card" data-metric="temperature">
+              <div class="metric-row">
+                <h2>Temperature</h2>
+                <span class="badge badge-live" data-badge="temperature">LIVE</span>
+              </div>
+              <div class="metric-value-row">
+                <div class="metric-value" data-value="temperature">24.8</div>
+                <div class="metric-unit">deg C</div>
+              </div>
+              <div class="metric-bottom">
+                <div class="bar-track"><div class="bar-fill" data-bar="temperature"></div></div>
+                <canvas class="sparkline" data-spark="temperature" width="216" height="42"></canvas>
+              </div>
+            </article>
+
+            <article class="panel metric-card" data-metric="humidity">
+              <div class="metric-row">
+                <h2>Humidity</h2>
+                <span class="badge badge-live" data-badge="humidity">LIVE</span>
+              </div>
+              <div class="metric-value-row">
+                <div class="metric-value" data-value="humidity">45.2</div>
+                <div class="metric-unit">% RH</div>
+              </div>
+              <div class="metric-bottom">
+                <div class="bar-track"><div class="bar-fill" data-bar="humidity"></div></div>
+                <canvas class="sparkline" data-spark="humidity" width="216" height="42"></canvas>
+              </div>
+            </article>
+
+            <article class="panel metric-card" data-metric="distance">
+              <div class="metric-row">
+                <h2>Distance</h2>
+                <span class="badge badge-live" data-badge="distance">LIVE</span>
+              </div>
+              <div class="metric-value-row">
+                <div class="metric-value" data-value="distance">58</div>
+                <div class="metric-unit">mm</div>
+              </div>
+              <div class="metric-bottom">
+                <div class="bar-track"><div class="bar-fill" data-bar="distance"></div></div>
+                <canvas class="sparkline" data-spark="distance" width="216" height="42"></canvas>
+              </div>
+            </article>
+          </section>
+
+          <section class="panel trends-page tft-page hidden" id="page-trends">
+            <div class="trends-header">
+              <h2>Live Trends</h2>
+              <div class="trend-legend">
+                <span class="legend-item">
+                  <span class="legend-dot legend-temp"></span>
+                  Temp (deg C)
+                </span>
+                <span class="legend-item">
+                  <span class="legend-dot legend-humidity"></span>
+                  Humidity (% RH)
+                </span>
+              </div>
+            </div>
+            <canvas id="trendsCanvas" class="trends-canvas" width="940" height="220"></canvas>
+            <div class="trend-live-row">
+              <span>Temp: <strong id="trendTempValue">--</strong></span>
+              <span>Humidity: <strong id="trendHumidityValue">--</strong></span>
+              <span>Samples: <strong id="trendSampleCount">0</strong></span>
+            </div>
+          </section>
+
+          <section class="panel logging-page tft-page hidden" id="page-logging">
+            <div class="logging-header">
+              <h2>SD Logging</h2>
+              <span id="sdStatusBadge" class="badge badge-live">SD READY</span>
+            </div>
+            <div class="logging-meta">
+              <span>File: <strong id="logFileName">env_20260309.csv</strong></span>
+            </div>
+            <div class="csv-table-wrap">
+              <table class="csv-table">
+                <thead>
+                  <tr>
+                    <th>Time (s)</th>
+                    <th>Temp (C)</th>
+                    <th>Humidity (%RH)</th>
+                    <th>Distance (mm)</th>
+                  </tr>
+                </thead>
+                <tbody id="csvTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <footer class="panel footer-panel" id="footer">
+            Sensors healthy | sample age: 0s
+          </footer>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="tester controls">
+        <h3>Local UI Tester Controls</h3>
+        <div class="control-grid">
+          <label>
+            Temperature (deg C)
+            <input type="range" min="10" max="40" step="0.1" value="24.8" id="tempRange" />
+          </label>
+          <label>
+            Humidity (% RH)
+            <input type="range" min="20" max="90" step="0.1" value="45.2" id="humidityRange" />
+          </label>
+          <label>
+            Distance (mm)
+            <input type="range" min="0" max="200" step="1" value="58" id="distanceRange" />
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="shtc3Online" checked />
+            SHTC3 online (temperature + humidity)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="distanceOnline" checked />
+            VL6180X online (distance)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="animate" checked />
+            Animate values
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="sdInstalled" checked />
+            SD card installed
+          </label>
+        </div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

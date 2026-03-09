@@ -1,0 +1,469 @@
+:root {
+  --bg-top: #070d1a;
+  --bg-bottom: #0d0a14;
+  --shell-border: #2f537f;
+  --shell-shadow: rgba(0, 0, 0, 0.42);
+  --screen-a: #081222;
+  --screen-b: #140a12;
+  --panel-bg: #0e1b33;
+  --panel-border: #264970;
+  --title-text: #d5eaff;
+  --muted-text: #98bfdf;
+  --value-text: #f7fbfe;
+  --footer-text: #c8dff4;
+  --temp-accent: #ff9f43;
+  --humidity-accent: #00c8ff;
+  --distance-accent: #7effa3;
+  --live-bg: #1b8254;
+  --live-text: #e9fcef;
+  --offline-bg: #88262b;
+  --offline-text: #ffe5e5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Bahnschrift", "Trebuchet MS", "Segoe UI", sans-serif;
+  color: #edf3fb;
+  background:
+    radial-gradient(circle at 10% 5%, #24305f 0%, transparent 42%),
+    radial-gradient(circle at 85% 88%, #463057 0%, transparent 38%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+.page {
+  width: min(1100px, 96vw);
+  margin: 20px auto 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.tft-shell {
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--shell-border);
+  background: linear-gradient(145deg, #101a30, #0a0f1d);
+  box-shadow:
+    0 24px 50px var(--shell-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.tft-screen {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 14px;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, var(--screen-a) 0%, #11172a 58%, var(--screen-b) 100%);
+  border: 1px solid #2b4d77;
+}
+
+.panel {
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+}
+
+.header-panel {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  column-gap: 10px;
+  padding: 8px 12px;
+  background: #0c1e38;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo {
+  width: clamp(34px, 4.6vw, 54px);
+  height: clamp(34px, 4.6vw, 54px);
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #2f537a;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px;
+}
+
+.header-copy {
+  min-width: 0;
+}
+
+.header-panel h1 {
+  margin: 0;
+  font-size: clamp(10px, 2.1vw, 16px);
+  letter-spacing: 0.06em;
+  color: var(--title-text);
+}
+
+.header-panel p {
+  margin: 3px 0 0;
+  font-size: clamp(8px, 1.5vw, 12px);
+  color: #aed6f0;
+}
+
+.uptime {
+  margin-top: 1px;
+  font-size: clamp(9px, 1.8vw, 13px);
+  color: #fffced;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  justify-self: end;
+}
+
+.next-page-btn {
+  border: 1px solid #3d6592;
+  background: linear-gradient(180deg, #1b3d64, #153253);
+  color: #d8ecff;
+  border-radius: 8px;
+  font-size: clamp(8px, 1.3vw, 11px);
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.next-page-btn:hover {
+  filter: brightness(1.1);
+}
+
+.tft-page.hidden {
+  display: none;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 12px;
+  min-height: 0;
+}
+
+.metric-card {
+  padding: 8px 10px 10px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  min-height: 0;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #27476d;
+  padding-bottom: 5px;
+}
+
+.metric-row h2 {
+  margin: 0;
+  font-size: clamp(10px, 1.8vw, 14px);
+  color: #c1ddf1;
+}
+
+.badge {
+  font-size: clamp(8px, 1.4vw, 11px);
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 9px;
+  letter-spacing: 0.03em;
+}
+
+.badge-live {
+  background: var(--live-bg);
+  color: var(--live-text);
+}
+
+.badge-offline {
+  background: var(--offline-bg);
+  color: var(--offline-text);
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.metric-value {
+  font-size: clamp(22px, 4.6vw, 42px);
+  line-height: 1;
+  color: var(--value-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-unit {
+  margin-bottom: 4px;
+  font-size: clamp(9px, 1.5vw, 13px);
+  color: #97c1df;
+}
+
+.metric-bottom {
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 10px;
+  min-height: 0;
+}
+
+.bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #142b48;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  transition: width 180ms linear;
+}
+
+[data-metric="temperature"] .bar-fill {
+  background: var(--temp-accent);
+}
+
+[data-metric="humidity"] .bar-fill {
+  background: var(--humidity-accent);
+}
+
+[data-metric="distance"] .bar-fill {
+  background: var(--distance-accent);
+}
+
+.sparkline {
+  width: 100%;
+  height: 42px;
+  border-radius: 6px;
+  border: 1px solid #1f3e62;
+  background: #091527;
+}
+
+.footer-panel {
+  padding: 6px 10px;
+  font-size: clamp(9px, 1.5vw, 12px);
+  color: var(--footer-text);
+  display: flex;
+  align-items: center;
+}
+
+.trends-page {
+  padding: 10px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+}
+
+.trends-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trends-header h2,
+.logging-header h2 {
+  margin: 0;
+  font-size: clamp(11px, 1.8vw, 16px);
+  color: #d3e9ff;
+}
+
+.trend-legend {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  font-size: clamp(8px, 1.3vw, 11px);
+  color: #b7d5ec;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.legend-temp {
+  background: var(--temp-accent);
+}
+
+.legend-humidity {
+  background: var(--humidity-accent);
+}
+
+.trends-canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #2a4d74;
+  background: #081425;
+}
+
+.trend-live-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: clamp(9px, 1.5vw, 12px);
+  color: #c2dbf0;
+}
+
+.trend-live-row strong {
+  color: #f4fbff;
+}
+
+.logging-page {
+  padding: 10px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 8px;
+}
+
+.logging-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logging-meta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: clamp(9px, 1.4vw, 12px);
+  color: #bad8ed;
+}
+
+.logging-meta strong {
+  color: #f4fbff;
+}
+
+.csv-table-wrap {
+  min-height: 0;
+  border: 1px solid #274971;
+  background: #0a1628;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.csv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(12px, 1.9vw, 18px);
+  color: #b7e4ff;
+}
+
+.csv-table thead th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: 10px 12px;
+  background: #10233d;
+  color: #e1f2ff;
+  border-bottom: 1px solid #2e5784;
+}
+
+.csv-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #18365a;
+}
+
+.csv-table tbody tr:nth-child(odd) {
+  background: #0b1930;
+}
+
+.csv-table tbody tr:nth-child(even) {
+  background: #10233a;
+}
+
+.controls {
+  border-radius: 14px;
+  border: 1px solid #2e466a;
+  background: linear-gradient(180deg, #101a31, #0c1324);
+  padding: 12px;
+}
+
+.controls h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #cfe8ff;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.control-grid label {
+  display: grid;
+  gap: 6px;
+  color: #b8d5ec;
+  font-size: 13px;
+}
+
+.control-grid input[type="range"] {
+  width: 100%;
+}
+
+.checkbox-row {
+  grid-template-columns: 18px 1fr;
+  align-items: center;
+}
+
+.checkbox-row input {
+  margin: 0;
+}
+
+@media (max-width: 740px) {
+  .page {
+    width: min(1000px, 98vw);
+    margin-top: 10px;
+  }
+
+  .tft-shell {
+    padding: 8px;
+  }
+
+  .tft-screen {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .header-panel {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 4px;
+  }
+
+  .uptime {
+    grid-column: 1 / span 3;
+    justify-self: start;
+    margin-left: 2px;
+  }
+
+  .card-grid {
+    gap: 8px;
+  }
+
+  .metric-card {
+    padding: 6px 8px 8px;
+  }
+}
