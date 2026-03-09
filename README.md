@@ -5,7 +5,7 @@ This project is focused on monitoring and data logging for:
 - Temperature (SHTC3)
 - Humidity (SHTC3)
 - Distance (VL6180X)
-
+ 
 This repo is used in combination with [plasmaData_analysis](https://github.com/dylanhadfieldd/plasmaData_analysis.git) for downstream analysis and reproducibility.
 
 ## Project Layout
