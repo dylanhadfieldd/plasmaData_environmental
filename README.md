@@ -17,6 +17,10 @@ This repo is used in combination with [plasmaData_analysis](https://github.com/d
 
 ![alt text](<screenshots/Screenshot 2026-03-09 100920.png>)
 
+pio run -e esp32dev -t upload
+pio device monitor -p COM4 -b 115200
+
+pio device monitor -b 115200
 
 ## Project Layout
 
