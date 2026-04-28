@@ -9,10 +9,11 @@ class TrendBuffer {
  public:
   static constexpr size_t kCapacity = 180;  // 3 minutes @ 1 Hz
 
-  void push(float temperatureC, float humidityPct, float distanceMm) {
+  void push(float temperatureC, float humidityPct, float distanceMm, uint32_t sampleMs) {
     data_[head_].temperatureC = temperatureC;
     data_[head_].humidityPct = humidityPct;
     data_[head_].distanceMm = distanceMm;
+    data_[head_].sampleMs = sampleMs;
 
     head_ = (head_ + 1) % kCapacity;
     if (count_ < kCapacity) {
@@ -37,4 +38,3 @@ class TrendBuffer {
   size_t head_ = 0;   // next write position
   size_t count_ = 0;  // number of valid points
 };
-

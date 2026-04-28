@@ -47,13 +47,14 @@ void setup() {
 void loop() {
   const uint32_t nowMs = millis();
 
+  gUi.pollInput(nowMs);
   gSensors.update(nowMs);
   const SensorSnapshot& snapshot = gSensors.snapshot();
 
   if (nowMs - gLastTrendMs >= cfg::kTrendSampleMs) {
     if (validNumber(snapshot.temperatureC) || validNumber(snapshot.humidityPct) ||
         validNumber(snapshot.distanceMm)) {
-      gTrends.push(snapshot.temperatureC, snapshot.humidityPct, snapshot.distanceMm);
+      gTrends.push(snapshot.temperatureC, snapshot.humidityPct, snapshot.distanceMm, nowMs);
     }
     gLastTrendMs = nowMs;
   }

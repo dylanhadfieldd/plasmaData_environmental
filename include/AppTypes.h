@@ -15,5 +15,5 @@ struct TrendPoint {
   float temperatureC = NAN;
   float humidityPct = NAN;
   float distanceMm = NAN;
+  uint32_t sampleMs = 0;
 };
-

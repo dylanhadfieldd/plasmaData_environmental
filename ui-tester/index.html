@@ -11,22 +11,44 @@
       <section class="tft-shell" aria-label="TFT preview frame">
         <div class="tft-screen" id="screen">
           <header class="panel header-panel">
-            <div class="header-brand">
-              <img
-                src="assets/capture-healing-logo.png"
-                alt="CAPture Healing logo"
-                class="header-logo"
-              />
-            </div>
             <div class="header-copy">
-              <h1>ESP32 ENVIRONMENT DASHBOARD</h1>
-              <p id="pageTitle">Main Dashboard</p>
+              <h1 id="brandTitle">Capture Healing</h1>
+              <p id="pageTitle">Welcome</p>
             </div>
-            <button id="nextPageBtn" class="next-page-btn" type="button">NEXT PAGE</button>
-            <div class="uptime" id="uptime">UP 00:00:00</div>
+            <div class="header-status">
+              <div class="uptime" id="uptime">UP 00:00:00</div>
+              <div class="page-tag" id="pageTag">P1/4</div>
+            </div>
+            <div class="page-actions">
+              <button id="prevPageBtn" class="page-nav-btn" type="button">PREV</button>
+              <button id="nextPageBtn" class="page-nav-btn" type="button">NEXT</button>
+            </div>
           </header>
 
-          <section class="card-grid tft-page" id="page-dashboard">
+          <section class="panel logo-page tft-page" id="page-logo">
+            <div class="logo-layout">
+              <div class="logo-image-wrap">
+                <img
+                  src="assets/capture-healing-logo.png"
+                  alt="CAPture Healing logo"
+                  class="logo-page-image"
+                />
+              </div>
+              <div class="logo-divider"></div>
+              <div class="logo-copy">
+                <h2>
+                  <span id="logoTitleLine1">Capture</span>
+                  <span id="logoTitleLine2">Healing</span>
+                </h2>
+                <p>
+                  <span id="logoSubtitleLine1">Cold Atmospheric</span>
+                  <span id="logoSubtitleLine2">Plasma Research</span>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="card-grid tft-page hidden" id="page-dashboard">
             <article class="panel metric-card" data-metric="temperature">
               <div class="metric-row">
                 <h2>Temperature</h2>
@@ -75,7 +97,7 @@
 
           <section class="panel trends-page tft-page hidden" id="page-trends">
             <div class="trends-header">
-              <h2>Live Trends</h2>
+              <h2 id="trendsHeading">Temperature + Humidity + Distance</h2>
               <div class="trend-legend">
                 <span class="legend-item">
                   <span class="legend-dot legend-temp"></span>
@@ -85,32 +107,37 @@
                   <span class="legend-dot legend-humidity"></span>
                   Humidity (% RH)
                 </span>
+                <span class="legend-item">
+                  <span class="legend-dot legend-distance"></span>
+                  Distance (mm)
+                </span>
               </div>
             </div>
             <canvas id="trendsCanvas" class="trends-canvas" width="940" height="220"></canvas>
             <div class="trend-live-row">
               <span>Temp: <strong id="trendTempValue">--</strong></span>
               <span>Humidity: <strong id="trendHumidityValue">--</strong></span>
+              <span>Distance: <strong id="trendDistanceValue">--</strong></span>
               <span>Samples: <strong id="trendSampleCount">0</strong></span>
             </div>
           </section>
 
           <section class="panel logging-page tft-page hidden" id="page-logging">
             <div class="logging-header">
-              <h2>SD Logging</h2>
+              <h2 id="loggingHeading">SD Logging Status</h2>
               <span id="sdStatusBadge" class="badge badge-live">SD READY</span>
             </div>
             <div class="logging-meta">
-              <span>File: <strong id="logFileName">env_20260309.csv</strong></span>
+              <span>File: <strong id="logFileName">env_00000001.csv</strong></span>
             </div>
             <div class="csv-table-wrap">
               <table class="csv-table">
                 <thead>
                   <tr>
-                    <th>Time (s)</th>
-                    <th>Temp (C)</th>
-                    <th>Humidity (%RH)</th>
-                    <th>Distance (mm)</th>
+                    <th>Time [s]</th>
+                    <th>Temp [C]</th>
+                    <th>Humidity [RH%]</th>
+                    <th>Dist. [mm]</th>
                   </tr>
                 </thead>
                 <tbody id="csvTableBody"></tbody>
@@ -158,6 +185,7 @@
         </div>
       </section>
     </main>
+    <script src="generated/firmware-ui.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

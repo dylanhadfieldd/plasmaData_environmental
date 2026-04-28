@@ -175,7 +175,7 @@ GND     ---------------------> GND
 
 ## Local Web UI Tester (TFT Preview on localhost)
 
-This repo includes a browser-based TFT mock so you can iterate on dashboard layout without flashing hardware.
+This repo includes a browser-based TFT mock so you can iterate on dashboard layout without flashing hardware. The launcher syncs tester metadata from the current firmware renderer before starting the local server.
 
 ### Option A: One-command launcher (PowerShell)
 
@@ -189,9 +189,16 @@ Open:
 
 - `http://localhost:8765`
 
+The launcher regenerates `ui-tester/generated/firmware-ui.js` from:
+
+- `include/UiRenderer.h`
+- `src/UiRenderer.cpp`
+- `include/Config.h`
+
 ### Option B: Manual static server
 
 ```powershell
+python .\scripts\sync-ui-tester.py
 cd .\ui-tester
 python -m http.server 8765
 ```
@@ -202,10 +209,12 @@ Open:
 
 ### Tester Features
 
-- 3-page UI flow with `NEXT PAGE` button:
+- Synced page order, page titles, colors, metric labels, units, ranges, and chart accents from the firmware renderer.
+- 4-page UI flow with `PREV`/`NEXT` buttons:
+  - Welcome / Capture Healing logo page
   - Main Dashboard
-  - Live Trends (Temp + Humidity chart)
-  - SD Logging (clean table view, alternating row colors, save status)
+  - Live Trends (temperature + humidity + distance chart)
+  - SD Logging (clean table preview)
 - 480x320-style TFT frame with matching visual language.
 - Temperature, humidity, and distance cards with live/offline badges and value bars.
 - UI control panel to:
