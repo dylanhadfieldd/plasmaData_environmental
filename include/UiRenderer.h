@@ -26,6 +26,8 @@ class UiRenderer {
     Distance,
   };
 
+  static constexpr size_t kMetricCount = 3;
+
   struct CardGeometry {
     int16_t x = 0;
     int16_t y = 0;
@@ -57,15 +59,13 @@ class UiRenderer {
     char recentRows[5][72] = {};
   };
 
+  // Renderer state
   TFT_eSPI tft_;
   PageKind currentPage_ = PageKind::Logo;
   bool scaffoldDrawn_ = false;
   uint32_t lastUptimeSecond_ = static_cast<uint32_t>(-1);
   PageKind lastHeaderPage_ = PageKind::Logo;
   bool footerCacheValid_ = false;
-  bool lastFooterTempHumidityOk_ = false;
-  bool lastFooterDistanceOk_ = false;
-  uint32_t lastFooterAgeSec_ = static_cast<uint32_t>(-1);
   uint32_t lastSparklineRefreshMs_ = 0;
   bool touchLatched_ = false;
   int8_t pendingPageDelta_ = 0;
@@ -75,11 +75,12 @@ class UiRenderer {
   uint8_t ft62xxTouchAddr_ = 0;
   bool gt911TouchReady_ = false;
   uint8_t gt911TouchAddr_ = 0;
-  MetricRenderCache metricCache_[3]{};
+  MetricRenderCache metricCache_[kMetricCount]{};
   TrendsPageRenderCache trendsCache_{};
   LoggingPageRenderCache loggingCache_{};
   bool logoPageCacheValid_ = false;
 
+  // Cache and input lifecycle
   void resetDynamicCaches_();
   bool checkForPageTap_(uint32_t nowMs, int8_t& pageDelta);
   bool readAnyTouchDown_(bool& down, uint16_t& tx, uint16_t& ty, bool& havePosition);
@@ -90,8 +91,11 @@ class UiRenderer {
   void nextPage_();
   void prevPage_();
 
+  // Static page text
   const char* pageTitle_(PageKind page) const;
   const char* pageSubtitle_(PageKind page) const;
+
+  // Layout and chrome
   void drawScaffold_();
   void drawPageFrame_();
   void drawVerticalGradient_(int16_t x, int16_t y, int16_t w, int16_t h);
@@ -106,12 +110,16 @@ class UiRenderer {
   int metricIndex_(MetricKind metric) const;
   void drawHeader_(uint32_t nowMs);
   void drawFooter_(uint32_t nowMs, const SensorSnapshot& snapshot);
+
+  // Page bodies
   void drawLogoPage_();
   void drawMetricCards_(const SensorSnapshot& snapshot);
   void drawTrendsPage_(const SensorSnapshot& snapshot, const TrendBuffer& trends,
                        bool refreshSparklines);
   void drawLoggingPage_(uint32_t nowMs, const SensorSnapshot& snapshot,
                         const TrendBuffer& trends);
+
+  // Shared widgets
   void drawMetricCardDynamic_(const CardGeometry& geometry, MetricKind metric, float value,
                               bool valid);
   void drawStatusBadge_(int16_t x, int16_t y, const char* label, uint16_t fillColor,
@@ -121,7 +129,7 @@ class UiRenderer {
   void drawCombinedTrendsChart_(int16_t x, int16_t y, int16_t w, int16_t h,
                                 const TrendBuffer& trends);
 
-  float pickMetricValue_(const TrendPoint& point, MetricKind metric) const;
+  // Formatting and metric helpers
   void formatMetricValue_(MetricKind metric, float value, bool valid, char* out,
                           size_t outSize) const;
   float normalize_(float value, float minValue, float maxValue) const;

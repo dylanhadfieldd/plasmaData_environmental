@@ -15,7 +15,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 UI_RENDERER_H = ROOT / "include" / "UiRenderer.h"
-UI_RENDERER_CPP = ROOT / "src" / "UiRenderer.cpp"
+UI_RENDERER_SOURCE_FILES = [
+    ROOT / "src" / "UiRendererSupport.h",
+    *sorted((ROOT / "src").glob("UiRenderer*.cpp")),
+]
 CONFIG_H = ROOT / "include" / "Config.h"
 OUTPUT = ROOT / "ui-tester" / "generated" / "firmware-ui.js"
 
@@ -194,7 +197,10 @@ def parse_copy(ui_renderer_cpp: str) -> dict[str, str]:
     if logging_strings:
         copy["loggingHeading"] = cpp_string(logging_strings[0])
 
-    footer_match = re.search(r'snprintf\(line,\s*sizeof\(line\),\s*"([^"]+)"\);', ui_renderer_cpp)
+    footer_body = extract_braced_block(ui_renderer_cpp, "void UiRenderer::drawFooter_")
+    footer_match = re.search(r'snprintf\(line,\s*sizeof\(line\),\s*"([^"]+)"\);', footer_body)
+    if not footer_match:
+        footer_match = re.search(r'const\s+char\*\s+line\s*=\s*"((?:\\.|[^"])*)";', footer_body)
     if footer_match:
         copy["footerOnline"] = cpp_string(footer_match.group(1))
 
@@ -203,34 +209,33 @@ def parse_copy(ui_renderer_cpp: str) -> dict[str, str]:
 
 def build_config() -> dict[str, object]:
     ui_renderer_h = read(UI_RENDERER_H)
-    ui_renderer_cpp = read(UI_RENDERER_CPP)
+    ui_renderer_sources = "\n\n".join(read(path) for path in UI_RENDERER_SOURCE_FILES)
     config_h = read(CONFIG_H)
 
     constants = parse_config_constants(config_h)
     pages = parse_page_enum(ui_renderer_h)
-    titles = parse_page_text(ui_renderer_cpp, "pageTitle")
-    subtitles = parse_page_text(ui_renderer_cpp, "pageSubtitle")
+    titles = parse_page_text(ui_renderer_sources, "pageTitle")
+    subtitles = parse_page_text(ui_renderer_sources, "pageSubtitle")
     for page in pages:
         enum_name = str(page["enumName"])
         page["title"] = titles.get(enum_name, enum_name)
         page["subtitle"] = subtitles.get(enum_name, "")
 
-    page_count = parse_page_count(ui_renderer_cpp, len(pages))
+    page_count = parse_page_count(ui_renderer_sources, len(pages))
     if page_count != len(pages):
         raise ValueError(f"kPageCount is {page_count}, but PageKind has {len(pages)} entries")
 
     return {
         "schemaVersion": 1,
         "sourceFiles": [
-            "include/UiRenderer.h",
-            "src/UiRenderer.cpp",
-            "include/Config.h",
+            str(path.relative_to(ROOT).as_posix())
+            for path in [UI_RENDERER_H, *UI_RENDERER_SOURCE_FILES, CONFIG_H]
         ],
         "pageCount": page_count,
         "pages": pages,
-        "palette": parse_palette(ui_renderer_cpp),
-        "metrics": parse_metric_meta(ui_renderer_cpp, constants),
-        "copy": parse_copy(ui_renderer_cpp),
+        "palette": parse_palette(ui_renderer_sources),
+        "metrics": parse_metric_meta(ui_renderer_sources, constants),
+        "copy": parse_copy(ui_renderer_sources),
     }
 
 

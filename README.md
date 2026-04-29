@@ -17,10 +17,13 @@ This repo is used in combination with [plasmaData_analysis](https://github.com/d
 
 ![alt text](<screenshots/Screenshot 2026-03-09 100920.png>)
 
-pio run -e esp32dev -t upload
-pio device monitor -p COM4 -b 115200
+Common PlatformIO commands:
 
+```powershell
+pio run -e esp32dev
+pio run -e esp32dev -t upload
 pio device monitor -b 115200
+```
 
 ## Project Layout
 
@@ -28,25 +31,47 @@ pio device monitor -b 115200
 .
 |-- include/
 |   |-- AppTypes.h
+|   |-- Numeric.h
 |   |-- Config.h
 |   |-- SensorManager.h
 |   |-- TrendBuffer.h
-|   `-- UiRenderer.h
+|   |-- UiRenderer.h
+|   `-- assets/
+|       `-- CaptureHealingLogo.h
+|-- data/
+|   `-- 04_16data.csv
 |-- scripts/
+|   |-- sync-ui-tester.py
 |   `-- start-ui-tester.ps1
 |-- src/
 |   |-- main.cpp
 |   |-- SensorManager.cpp
-|   `-- UiRenderer.cpp
+|   |-- UiRenderer.cpp
+|   |-- UiRendererChrome.cpp
+|   |-- UiRendererLayout.cpp
+|   |-- UiRendererMetrics.cpp
+|   |-- UiRendererPages.cpp
+|   |-- UiRendererSupport.h
+|   |-- UiRendererTouch.cpp
+|   `-- UiRendererWidgets.cpp
 |-- ui-tester/
 |   |-- app.js
 |   |-- assets/
 |   |   `-- capture-healing-logo.png
+|   |-- generated/
+|   |   `-- firmware-ui.js
 |   |-- index.html
 |   `-- styles.css
 |-- platformio.ini
 `-- README.md
 ```
+
+Firmware responsibilities are split by module:
+
+- `SensorManager` owns I2C sensor startup, polling, smoothing, and health flags.
+- `TrendBuffer` stores the in-memory time-series window used by the TFT views.
+- `UiRenderer` keeps a stable public API while its implementation is split into lifecycle, touch input, layout/chrome, page bodies, widgets, and metric formatting files.
+- `scripts/sync-ui-tester.py` extracts UI metadata from the renderer sources so the browser tester stays aligned with firmware constants.
 
 ## Pinout (ESP32)
 
@@ -192,7 +217,8 @@ Open:
 The launcher regenerates `ui-tester/generated/firmware-ui.js` from:
 
 - `include/UiRenderer.h`
-- `src/UiRenderer.cpp`
+- `src/UiRenderer*.cpp`
+- `src/UiRendererSupport.h`
 - `include/Config.h`
 
 ### Option B: Manual static server

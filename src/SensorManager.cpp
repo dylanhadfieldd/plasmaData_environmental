@@ -1,17 +1,9 @@
 #include "SensorManager.h"
 
 #include <Wire.h>
-#include <math.h>
 
 #include "Config.h"
-
-namespace {
-
-bool validNumber(float v) {
-  return !isnan(v) && !isinf(v);
-}
-
-}  // namespace
+#include "Numeric.h"
 
 bool SensorManager::begin() {
   Wire.begin(cfg::kPinI2cSda, cfg::kPinI2cScl);
@@ -43,7 +35,8 @@ void SensorManager::update(uint32_t nowMs) {
     sensors_event_t temp;
 
     if (shtc3_.getEvent(&humidity, &temp)) {
-      if (validNumber(temp.temperature) && validNumber(humidity.relative_humidity)) {
+      if (app::isFiniteNumber(temp.temperature) &&
+          app::isFiniteNumber(humidity.relative_humidity)) {
         if (!tempHumidityPrimed_) {
           snapshot_.temperatureC = temp.temperature;
           snapshot_.humidityPct = humidity.relative_humidity;
@@ -91,4 +84,3 @@ void SensorManager::update(uint32_t nowMs) {
 
   snapshot_.sampleMs = nowMs;
 }
-

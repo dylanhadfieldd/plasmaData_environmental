@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include <math.h>
 
 #include "Config.h"
+#include "Numeric.h"
 #include "SensorManager.h"
 #include "TrendBuffer.h"
 #include "UiRenderer.h"
@@ -15,10 +15,6 @@ UiRenderer gUi;
 uint32_t gLastTrendMs = 0;
 uint32_t gLastUiMs = 0;
 uint32_t gLastSerialMs = 0;
-
-bool validNumber(float v) {
-  return !isnan(v) && !isinf(v);
-}
 
 }  // namespace
 
@@ -52,8 +48,8 @@ void loop() {
   const SensorSnapshot& snapshot = gSensors.snapshot();
 
   if (nowMs - gLastTrendMs >= cfg::kTrendSampleMs) {
-    if (validNumber(snapshot.temperatureC) || validNumber(snapshot.humidityPct) ||
-        validNumber(snapshot.distanceMm)) {
+    if (app::isFiniteNumber(snapshot.temperatureC) || app::isFiniteNumber(snapshot.humidityPct) ||
+        app::isFiniteNumber(snapshot.distanceMm)) {
       gTrends.push(snapshot.temperatureC, snapshot.humidityPct, snapshot.distanceMm, nowMs);
     }
     gLastTrendMs = nowMs;
